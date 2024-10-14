@@ -1,0 +1,15 @@
+{% extends "html.twig" %}
+{% set showbranding = true %}
+{% set statusbar = false %}
+{% set title = "Privacy Policy" %}
+
+{% block content %}
+<div style="display: flex; flex-direction: column; gap: 0.5em;">
+  <h5 style="margin: 0; font-size: 1.5em;">Privacy Policy</h5>
+  <span>By using this websites services, you agree to the privacy policy.</span>
+  <ol style="padding-left: 1.75em; margin: 0.25em 0; font-size: 1.025em;">
+    <li>Your internet address and user agent is logged when a file is uploaded, both combined and hashed in SHA256, used as a <b>public</b> identifier (We need this incase of any illegal activities so we can report them to a cybertip)</li>
+  </ol>
+  <span>This page can update at any time without any warning.</span> 
+</div>
+{% endblock %}

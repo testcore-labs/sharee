@@ -1,0 +1,9 @@
+{
+    "require": {
+        "twig/twig": "^3.7",
+        "scssphp/scssphp": "^1.11",
+        "twig/extra-bundle": "^3.8",
+        "symfony/twig-bundle": "^5.4.31",
+        "symfony/translation": "^6.0"
+    }
+}

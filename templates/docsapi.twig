@@ -1,0 +1,44 @@
+{% extends "html.twig" %}
+{% set showbranding = true %}
+{% set title = "API documentation" %}
+{% block content %}
+<div style="display: flex; flex-direction: column; gap: 1em;">
+  <h5 style="margin: 0; font-size: 1.5em;">API documentation (WIP)</h5>
+  {# <div style="display: flex; flex-direction: column; gap: 0.5em;">
+  <div style="display: flex; flex-direction: column; gap: 0.25em;">
+  <span style="margin: 0; font-size: 1.15em;">POST /upload</span>
+  <span>Request: ["file" => Binary Data, "privacy" => Integer (0 = public || 1 = private), "redirect" => Boolean (true||false)]</span>
+  <span>Response: ["response" => true, "text" => "Complete!"]</span></div>
+  <textarea readonly>Endpoint for uploading files, with a privacy parameter.</textarea>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 0.5em;">
+  <div style="display: flex; flex-direction: column; gap: 0.25em;">
+  <span style="margin: 0; font-size: 1.15em;">GET /api/file/{id}/info</span>
+  <span>Request: []</span>
+  <span>Response: ["id" => "MiBRFQXQuRdMRFHw7i7NxrotllxNCHKQ","filename" => "file.ext","mimetype" => "type/ext","size" => 1234,"privacy" => 0,"createdat" => 17000000000]</span></div>
+  <textarea readonly>Endpoint for getting information for a file.</textarea>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 0.5em;">
+  <div style="display: flex; flex-direction: column; gap: 0.25em;">
+  <span style="margin: 0; font-size: 1.15em;">GET /api/file/{id}/download</span>
+  <span>Request: []</span>
+  <span>Response: Binary Data</span></div>
+  <textarea readonly>Endpoint for getting a file.</textarea>
+  </div>  
+  
+  <div style="display: flex; flex-direction: column; gap: 0.5em;">
+  <div style="display: flex; flex-direction: column; gap: 0.25em;">
+  <span style="margin: 0; font-size: 1.15em;">GET /api/file/{id}/view</span>
+  <span>Request: [plaintext]</span>
+  <span>Response: Binary Data</span></div>
+  <textarea readonly>Endpoint for getting a file, with a plaintext parameter or just viewing the file with the correct mimetype.</textarea>
+  </div> #}
+
+  <div style="display: flex; flex-direction: row; gap: 0.5em; align-items: center;">
+    <div style="display: inline; padding: 0.25em 0.5em;" class="sunken-panel">POST</div>
+    <div>/api/test</div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "html.twig" %}
+{% set showbranding = true %}
+{% set title = file.get_filename() %}
+{% set description = file.get_description() %}
+{% set ogicon = icon %}
+{% block content %}
+{% for route in routes %}
+<a href="{{ route.uri }}" style="display: flex; flex-direction: row; gap: 0.5em; align-items: center; text-decoration: none; color: inherit;">
+<span>{{ route.method }}</span><span>{{ route.uri }}</span></a>
+{% endfor %}
+{% endblock %}

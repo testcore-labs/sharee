@@ -1,0 +1,91 @@
+{% extends "html.twig" %}
+{% set showbranding = true %}
+{% set title = file.get_filename() %}
+{% set description = file.get_description() %}
+{% set ogicon = icon %}
+{% block content %}
+{% if request.key|length > 0 %}<script>window.history.replaceState("", window.title, "{{ url }}");</script>{% endif %}
+<div style="display: flex; flex-direction: row; gap: 1em; align-items: center;">
+  <img src="{{ icon }}" style="image-rendering: pixelated;" height=32 width=32>
+  <div style="display: flex; flex-direction: column; gap: 0.1em;">
+    <h4 style="font-size: 1.6em; margin: 0; word-break: break-all;">{{ file.get_filename() }}</h4>
+    <b class="text-muted">{{ file.get_size()|int_shorten_size(1) }} - {{ file.get_createdat()|timeago }} - {{ file.get_createdat()|date("Y-m-d h:i:s") }}</b>
+  </div>
+</div>
+<b style="display: flex; flex-direction: row; gap: 0.25em; align-items: center; word-break: break-all;"><div style="position: relative;">
+      <img src="/assets/img/computer_explorer-1-skeleton-disp.png" style="image-rendering: pixelated; filter: hue-rotate({{ identifierto360deg(comment.get_identity()) }}deg);" height=16 width=16>
+      <img src="/assets/img/computer_explorer-1-skeleton.png" style="image-rendering: pixelated; position: absolute; top: 0; left: 0;" height=16 width=16>
+      </div>{{ file.get_identity() }}</b>
+<div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 0.5em; align-items: center; margin-top: 0.25em;">
+  <a style="flex: 1;" href="/api/file/{{ file.get_id() }}/download" {% if type == "executable" %} onclick="return confirm('Warning: Programs can do harm to your computer, proceed with caution.')"{% endif %}><button style="width: 100%;">Download</button></a>
+  <a style="flex: 1;" {% if type == "executable" %} onclick="return confirm('Warning: Programs can do harm to your computer, proceed with caution.')"{% endif %} href="/api/file/{{ file.get_id() }}/{{ file.get_filename() }}"><button style="width: 100%;" {% if not (type == "image" or type == "video" or type == "sound" or type == "html" or type == "document") %}disabled{% endif %}>View</button></a>
+  <a style="flex: 1;" href="/api/file/{{ file.get_id() }}/view?plaintext" {% if type == "executable" %} onclick="return confirm('Warning: Programs can do harm to your computer, proceed with caution.')"{% endif %}><button style="width: 100%;">Raw</button></a>
+  {% if hxrequest %}<a style="flex: 1;" href="/f/{{ file.get_id() }}"><button style="width: 100%;">Open</button></a>{% endif %}
+</div>
+{% if not (type == "html") %}
+{% if request.key|length > 0 %}<div style="flex-grow: 1; text-align: center; background: #ff3f38; padding: 0.5em; color: #fff;">Sucessfully uploaded file. Your key for this file is: <b>{{ request.key }}</b>, do not lose it.</div>{% endif %}
+<div style="display: flex; flex-direction: column; gap: 0.5em; flex-wrap: wrap;"> 
+  {% if type == "image" %} 
+  <ul class="tree-view" style="width: 100%; box-sizing: border-box; flex-grow: 1; flex-shrink: 2; max-height: 24em; resize: vertical; flex-basis: 260px;">
+    <img style="width: 100%; height: 100%; object-fit: contain; image-rendering: pixelated;" src="/api/file/{{ file.get_id() }}/{{ file.get_filename() }}">
+  </ul>
+  {% elseif type == "video" %}
+  <ul class="tree-view" style="width: 100%; box-sizing: border-box; flex-grow: 1; flex-shrink: 2; max-height: 24em; resize: vertical; flex-basis: 260px;">
+    <video style="width: 100%; height: 100%; object-fit: contain;" src="/api/file/{{ file.get_id() }}/{{ file.get_filename() }}" controls></video>
+  </ul>
+  {% elseif type == "sound" %} 
+    <audio  style="width: 100%; flex-grow: 1; flex-shrink: 2;" src="/api/file/{{ file.get_id() }}/{{ file.get_filename() }}" controls></audio>
+   {% elseif type == "document" %} 
+    <iframe frameborder=0 style="width: 100%; height: 100%; max-height: 32em; flex-grow: 1; flex-shrink: 2; flex-basis: 260px;" src="/api/file/{{ file.get_id() }}//{{ file.get_filename() }}"></iframe>
+  {% elseif type == "other" and file.get_size() < 1000000 %}
+    <div style="width: 100%; flex-grow: 1; flex-shrink: 2; min-height: 100%; flex-basis: 260px;"><textarea style="height: 100%; width: 100%; resize: vertical;" readonly>{{ file_get_contents(file.get_file()) }}</textarea></div>
+  {% endif %}
+</div>
+{% else %}
+<ul class="tree-view" style="display: flex; width: 100%; box-sizing: border-box; padding: 0; margin: 0; max-height: 24em;">
+<iframe src="/api/file/{{ file.get_id() }}/view" style="padding: 0; margin: 0; height: 100%; width: 100%;" frameborder=0 sandbox></iframe>
+</ul>
+{% endif %}
+{% if file.get_description()|length != 0 %}<div style="margin-top: 0.25em;">{{ file.get_description()|nl2br }}</div>{% endif %}
+<div style="display: flex; flex-direction: column; gap: 0.25em;">
+  <form action="/api/file/{{ file.get_id() }}/comment?redirect" method="POST">
+  <div style="display: flex; flex-direction: row; margin-top: 0.25em; gap: 0.5em; align-items: center; margin-top: 0.5em;"><h5 style="margin: 0; font-size: 1.5em;">Comments ({{ count }})</h5>
+  <button style="margin-left: auto;" type="submit">Submit</button></div>
+  <textarea placeholder="Wow!" style="width: 100%; resize: vertical;" name="comment" rows=2></textarea>
+  </form>
+  <div style="display: flex; flex-direction: column; gap: 1em; margin-top: 0.5em;">
+  {% if comments|length == 0 %} 
+  <div style="margin: 0.25em auto 0.5em;">No comments found.</div>
+  {% endif %}
+  {% for comment in comments %}
+    {% set comment = global("controllers\\comment", [con, comment.id]) %}
+    <div style="display: flex; gap: 0.5em; flex-direction: row; align-items: center;">
+      <div style="position: relative;">
+      <img src="/assets/img/computer_explorer-2-skeleton-disp.png" style="image-rendering: pixelated; filter: hue-rotate({{ identifierto360deg(comment.get_identity()) }}deg);" height=32 width=32>
+      <img src="/assets/img/computer_explorer-2-skeleton.png" style="image-rendering: pixelated; position: absolute; top: 0; left: 0;" height=32 width=32>
+      </div>
+      <div style="display: flex; gap: 0.3em; flex-direction: column;">
+        <div style="display: flex; gap: 0.5em; flex-direction: row; align-items: center;" title="{{ comment.get_identity() }}"><b>{{ comment.get_identity()|truncate(32) }}</b> - <span>{{ comment.get_createdat()|timeago }}</span></div>
+        <div style="display: flex; gap: 0.5em; flex-direction: row; align-items: center; flex-wrap: wrap;">{{ (comment.get_comment()|escape)|emojitohtml|raw }}</div>
+      </div>
+    </div>
+  {% endfor %}
+  </div>
+  {% if count != 0 %}
+  {% set dotset = false %}
+  <div style="display: flex; gap: 0.5em; flex-direction: row; justify-content: center; font-size: 1.2em;">
+  <a {% if page == 1 %}disabled{% else %}href="?{% if request.q %}q={{ request.q }}&{% endif %}{% if request.seed %}seed={{ seed }}&{% endif %}{% if request.sort %}sort={{ request.sort }}&{% endif %}{% if request.order %}order={{ request.order }}&{% endif %}p={{ (1 <= page - 1) and (page - 1 <= totalpages) ? page - 1 : 1 }}"{% endif %}><button {% if page == 1 %}disabled{% endif %}>Previous</button></a>
+  {% for pagee in (1 .. (totalpages)) %}
+    {% if pagee > 2 and pagee <= totalpages - 2 and pagee != page %}
+      {% if not dotset %} {% set dotset = true %}
+        <button disabled style="min-width: 25px;">...</button>
+      {% endif %} 
+    {% else %}
+      <a {% if page == pagee %}disabled{% else %}href="?{% if request.q %}q={{ request.q }}&{% endif %}{% if request.seed %}seed={{ seed }}&{% endif %}{% if request.sort %}sort={{ request.sort }}&{% endif %}{% if request.order %}order={{ request.order }}&{% endif %}p={{ pagee }}"{% endif %}><button style="min-width: 25px;" {% if page == pagee %}disabled{% endif %}>{{ pagee }}</button></a>
+    {% endif %}
+  {% endfor %}
+  <a {% if page == totalpages %}disabled{% else %}href="?{% if request.q %}q={{ request.q }}&{% endif %}{% if request.seed %}seed={{ seed }}&{% endif %}{% if request.sort %}sort={{ request.sort }}&{% endif %}{% if request.order %}order={{ request.order }}&{% endif %}p={{ (1 <= page + 1) and (page + 1 <= totalpages) ? page + 1 : totalpages }}"{% endif %}><button {% if page == totalpages %}disabled{% endif %}>Next</button></a>
+  {% endif %}
+  </div>
+<span style="text-align: center; margin: 0.25em auto 0 auto;">We are not responsible for what users upload on our platform.</span>
+{% endblock %}

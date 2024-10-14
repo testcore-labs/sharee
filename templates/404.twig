@@ -1,0 +1,18 @@
+{% extends "html.twig" %}
+{% set showbranding = false %}
+{% set statusbar = false %}
+{% set title = "404 Not Found" %}
+{% set randomerrs = [ 
+  "Maybe it just doesn't exist?",
+  "Try checking the URL to see if its spelt correctly.",
+  "This page could have been a file...",
+] %}
+{% set randomerr = randomerrs|shuffle[0] %}
+
+{% block content %}
+<div style="display: flex; flex-direction: column; gap: 0.5em;">
+  <h4 style="font-family: 'Pixelated MS Sans Serif'; margin: auto auto;">404 Not Found</h4>
+  <span style="font-family: 'Pixelated MS Sans Serif'; margin: 0.05em auto;">{{ randomerr }}</span>
+  <button style="display: inline-block; margin: 0 auto;" onclick="history.back();">Go back</button>
+</div>
+{% endblock %}

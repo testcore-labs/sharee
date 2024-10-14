@@ -1,0 +1,147 @@
+* {
+  scrollbar-width: none;
+}
+.userselectnoneall * {
+ user-select: none; 
+}
+
+.table-td-wrap {
+  white-space: normal; word-break: break-all !important; word-wrap: break-word !important; overflow-wrap:break-word; overflow: hidden;
+}
+@font-face {
+  font-family: "segoebold";
+  src: url(/assets/font/segoebold.ttf);
+}
+.segoebold {
+  font-family: 'segoebold';
+}
+
+.image-rendering-pixelated {
+  image-rendering: pixelated;
+}
+
+.spoiler-black {
+  color: #000;
+  background: #000;
+}
+
+.spoiler-black:hover {
+  color: inherit;
+  background: rgba(0, 0, 0, 0);
+}
+
+
+.spoiler-blur {
+  transition: 0.6s filter ease;
+  filter: blur(0.25em);
+}
+
+.spoiler-blur:hover {
+  transition: 0.2s filter ease;
+  filter: blur(0em);
+}
+
+.coolanimofyougettingbannedandtheipshowingup {
+  position: absolute;
+  left: 50%;
+  color: #e91717;
+  animation: coolanimofyougettingbannedandtheipshowingup 2s ease-out;
+  transform: scale(1) rotate(1090deg) translate(-50%, -50%);
+  text-shadow: 0 0 0 transparent, -1px -1px 0 #000000, 0px -1px 0 #000000, 1px -1px 0 #000000, -1px 0px 0 #000000, 0px 0px 0 #000000, 1px 0px 0 #000000, -1px 1px 0 #000000, 0px 1px 0 #000000, 1px 1px 0 #000000, -2px -2px 0 #000000, -1px -2px 0 #000000, 0px -2px 0 #000000, 1px -2px 0 #000000, 2px -2px 0 #000000, -2px -1px 0 #000000, -1px -1px 0 #000000, 0px -1px 0 #000000, 1px -1px 0 #000000, 2px -1px 0 #000000, -2px 0px 0 #000000, -1px 0px 0 #000000, 0px 0px 0 #000000, 1px 0px 0 #000000, 2px 0px 0 #000000, -2px 1px 0 #000000, -1px 1px 0 #000000, 0px 1px 0 #000000, 1px 1px 0 #000000, 2px 1px 0 #000000, -2px 2px 0 #000000, -1px 2px 0 #000000, 0px 2px 0 #000000, 1px 2px 0 #000000, 2px 2px 0 #000000;
+}
+
+@keyframes coolanimofyougettingbannedandtheipshowingup {
+  0%{
+    transform: scale(0.2) rotate(0deg) translate(-50%, 50%);
+  }
+
+  15%{
+    transform: scale(0.4) translate(50%, -50%);
+  } 
+
+  100%{
+    transform: scale(1) rotate(1090deg) translate(-50%, -50%);
+  }
+}
+
+
+small {
+  font-size: 0.9em;
+}
+
+.text-muted {
+  color: #3a3a3a;
+}
+
+.text-extramuted {
+  color: #666666;
+}
+
+.htmx-indicator{
+  display: none;
+}
+.htmx-request .htmx-indicator{
+  display: block;
+}
+.htmx-request.htmx-indicator{
+  display: block;
+}
+
+
+.winks {
+  --scale-factor-size: 1;
+  --scale-factor: 1;
+  background-image: url('/assets/img/winks.png');
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+  background-size: calc(2650% * var(--scale-factor-size)) auto;
+}
+.winks.winks-l {
+  width: 32px;
+  height: 32px;
+}
+.winks.winks-m {
+  image-rendering: pixelated;
+  width: 24px;
+  height: 24px;
+}
+.winks.winks-s {
+  --scale-factor: calc(2 / 3);
+  width: 16px;
+  height: 16px;
+}
+.winks.winks-xs {
+  width: 12px;
+  height: 12px;
+}
+
+.winks.nerd{background-position:0px 0px;}
+.winks.nerd { background-position: calc(0px * var(--scale-factor)) calc(0px * var(--scale-factor)); }
+.winks.sarcastic { background-position: calc(-25px * var(--scale-factor)) calc(0px * var(--scale-factor)); }
+.winks.secret-telling { background-position: calc(-50px * var(--scale-factor)) calc(0px * var(--scale-factor)); }
+.winks.sick { background-position: calc(-75px * var(--scale-factor)) calc(0px * var(--scale-factor)); }
+.winks.idontknow { background-position: calc(-100px * var(--scale-factor)) calc(0px * var(--scale-factor)); }
+.winks.lookingup { background-position: calc(-124px * var(--scale-factor)) calc(0px * var(--scale-factor)); }
+.winks.party { background-position: calc(-148px * var(--scale-factor)) calc(0px * var(--scale-factor)); }
+.winks.disappointed { background-position: calc(-173px * var(--scale-factor)) calc(0px * var(--scale-factor)); }
+.winks.angel { background-position: calc(-196.5px * var(--scale-factor)) calc(0px * var(--scale-factor)); }
+.winks.angry { background-position: calc(-221px * var(--scale-factor)) calc(0px * var(--scale-factor)); }
+.winks.woozy { background-position: calc(-246px * var(--scale-factor)) calc(0px * var(--scale-factor)); }
+.winks.nuhuh { background-position: calc(-270px * var(--scale-factor)) calc(0px * var(--scale-factor)); }
+.winks.qzip { background-position: calc(-294px * var(--scale-factor)) calc(0px * var(--scale-factor)); }
+.winks.sharee { background-position: calc(-318px * var(--scale-factor)) calc(0px * var(--scale-factor)); }
+.winks.devil { background-position: calc(0px * var(--scale-factor)) calc(-26px * var(--scale-factor)); }
+.winks.smooch { background-position: calc(-24px * var(--scale-factor)) calc(-26px * var(--scale-factor)); }
+.winks.surprised { background-position: calc(-49px * var(--scale-factor)) calc(-26px * var(--scale-factor)); }
+.winks.blush { background-position: calc(-74px * var(--scale-factor)) calc(-26px * var(--scale-factor)); }
+.winks.excited { background-position: calc(-98px * var(--scale-factor)) calc(-26px * var(--scale-factor)); }
+.winks.sad { background-position: calc(-123px * var(--scale-factor)) calc(-26px * var(--scale-factor)); }
+.winks.sunglasses { background-position: calc(-147px * var(--scale-factor)) calc(-26px * var(--scale-factor)); }
+.winks.happy { background-position: calc(-172px * var(--scale-factor)) calc(-26px * var(--scale-factor)); }
+.winks.hungry { background-position: calc(-197px * var(--scale-factor)) calc(-26px * var(--scale-factor)); }
+.winks.shocked { background-position: calc(-221px * var(--scale-factor)) calc(-26px * var(--scale-factor)); }
+.winks.wink { background-position: calc(-245px * var(--scale-factor)) calc(-26px * var(--scale-factor)); }
+.winks.shush { background-position: calc(-269.5px * var(--scale-factor)) calc(-26px * var(--scale-factor)); }
+.winks.anger { background-position: calc(-294px * var(--scale-factor)) calc(-26px * var(--scale-factor)); }
+.winks.uwu { background-position: calc(-318px * var(--scale-factor)) calc(-26px * var(--scale-factor)); }

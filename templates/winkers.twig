@@ -1,0 +1,14 @@
+{% extends "html.twig" %}
+{% set showbranding = true %}
+{% set statusbar = true %}
+{% set title = "Winks" %}
+{% block content %}
+{% if not winker %}
+<h4 style="margin: 0;">Winks</h4>
+{% for emoji, emojiactual in emojis %}
+<span style="display: flex; flex-direction: row; gap: 0.5em; align-items: center;">{{ emojiactual|raw }} <span>{{ emoji }}</span></span>
+{% endfor %}
+{% else %}
+{{ winker|raw }}
+{% endif %}
+{% endblock %}

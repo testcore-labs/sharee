@@ -1,0 +1,13 @@
+{% extends "html.twig" %}
+
+{% block content %}
+<button onclick="document.getElementById('show').style.display = 'flex'; document.getElementById('show').style.opacity = 1; (new Audio('/assets/snds/WOMP.mp3')).play(); this.style.display = 'none';">Click me</button>
+<div id="show" style="position: relative; display: none; flex-direction: column; gap: 0.25em; opacity: 0; transition: opacity 1.5s linear;">
+<h4 style="margin: 0;">YOU HAVE BEEN BANNED!</h4>
+<b>You have been banned for violating the Terms of Service.</b>
+<div><b>Reason:</b> {{ ban.get_reason() }}</div>
+{% if ban.get_offendingitem()|length > 0 %}<div><b>Offending item:</b> {{ ban.get_offendingitem() }}</div>{% endif %}
+{% if ban.is_permanent() %}<div><b>You are banned PERMANENTLY.</b></div>{% endif %}
+<h2 class="coolanimofyougettingbannedandtheipshowingup">{{ ip }}</h2>
+</div>
+{% endblock %}

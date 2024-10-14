@@ -1,0 +1,18 @@
+{% extends "html.twig" %}
+{% set showbranding = true %}
+{% set statusbar = false %}
+{% set title = "Terms of Service" %}
+
+{% block content %}
+<div style="display: flex; flex-direction: column; gap: 0.5em;">
+  <h5 style="margin: 0; font-size: 1.5em;">Terms of Service</h5>
+  <span>By using this websites services, you agree to the terms below. If any of these terms are broken, you could potentially be banned from ever using it. If you are caught with illegal material you most likely will face legal consequences.</span>
+  <ol style="padding-left: 1.75em; margin: 0.25em 0; font-size: 1.025em;">
+    <li>You cannot upload child exploitation material.</li>
+    <li>No pornongraphy or any not-safe-for-work material.</li>
+    <li>Refrain from using this service as a internet address logger, browser fingerprint logger or any logging using .html files.</li>
+    <li>Do not upload spammy content such as, repeating files that match ones content and/or hash.</li>
+  </ol>
+  <span>This page can update at any time without any warning.</span> 
+</div>
+{% endblock %}

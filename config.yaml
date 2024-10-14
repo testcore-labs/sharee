@@ -1,0 +1,45 @@
+project:
+  name: sharee
+  about: "A file sharing site!"
+  corp: testcore-labs # optional
+  version: "1.5.1-beta"
+  maintenance: 
+    value: true
+    reason: "coming soon.."
+    time: 0
+  accent: "#007c7f"
+  userdefaults:
+    desc: "hi! i'm new to testtube!"
+  motd:
+    testcore labs
+    Share, share, share!
+    1984 wont be like 1984
+    Orwell was right
+    Made with <a href="https://jdan.github.io/98.css">98.css</a>
+    Bap
+    testblox coming soon totally
+    <div onclick="boot();">Bet you can't click on me</div>
+
+
+  ffmpeg:
+    path: "/bin/ffmpeg"
+  ffprobe:
+    path: "/bin/ffprobe"
+
+
+fw:
+  locale: "Europe/Vilnius"
+  lang: en
+  name: qKit
+  debug: true
+  version: 1.1.0-alpha
+  enableEasterEgg: true 
+  enableGzip2Qzip: true
+  enableqKitHeaders: true # this shows what version it uses on the header
+
+# you could use this for apis for extensions IF we were to support them
+api:
+  accesskey: 
+    "CHANGE ME": dumbass 
+  turnstile-sitekey: "these-were-never"
+  turnstile-secret: "used"

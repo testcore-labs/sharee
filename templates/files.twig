@@ -1,0 +1,93 @@
+{% extends "html.twig" %}
+{% set showbranding = true %}
+{% set title = "Public files" %}
+{% block content %}
+<div style="display: flex; flex-direction: row; gap: 0.5em; flex-wrap: wrap;">
+<a href="?{% if request["seed"] %}{% else %}rand&{% endif %}{% if request.q %}q={{ request.q }}{% endif %}" style="flex-grow: 1;"><button style="width: 100%;">{% if request["seed"] %}Unrandomize{% else %}Randomize{% endif %}</button></a>
+<div style="display: flex; flex-direction: row; flex-grow: 2; flex-shrink: 1; flex-basis: 40em; position: relative;">
+<input name="q" value="{{ request.q }}" placeholder="Search for a file..." type="text" style="flex-grow: 1;" />
+<script>
+document.querySelector("[name=\"q\"]").addEventListener("keyup", function(event) {
+    var submit = document.querySelector("[submitt]")
+    event.preventDefault();
+    submit.setAttribute("href", submit.getAttribute("href").replace(/q=([^&]*)/, "q=" + this.value))
+    if (event.keyCode === 13) {
+      submit.click();
+    }
+});
+</script>
+<a submitt href="?q={{ request.q }}&{% if request.seed %}seed={{ seed }}&{% endif %}{% if request.sort %}sort={{ request.sort }}&{% endif %}p={{ page }}" style="top: 0.3em; right: 0.25em; position: absolute; cursor: pointer;"><img src="/assets/img/search_file_2-1.png" height=16></button></a>
+</div>
+<div style="display: flex; flex-direction: row; gap: 0.5em; flex-wrap: wrap; flex-grow: 1; flex-shrink: 1; justify-content: space-between;">
+<a href="?{% if request.q %}q={{ request.q }}&{% endif %}{% if request.seed %}seed={{ seed }}&{% endif %}sort=name{% if request.order %}&order={{ request.order }}{% endif %}" style="flex-grow: 1;"><button {% if request.sort == "name" %}disabled{% endif %} style="width: 100%;">Sort by <b>Name</b></button></a>
+<a href="?{% if request.q %}q={{ request.q }}&{% endif %}{% if request.seed %}seed={{ seed }}&{% endif %}sort=size{% if request.order %}&order={{ request.order }}{% endif %}" style="flex-grow: 1;"><button {% if request.sort == "size" %}disabled{% endif %} style="width: 100%;">Sort by <b>Size</b></button></a>
+<a href="?{% if request.q %}q={{ request.q }}&{% endif %}{% if request.seed %}seed={{ seed }}&{% endif %}sort={% if request.order %}&order={{ request.order }}{% endif %}" style="flex-grow: 1;"><button {% if request.sort == "" %}disabled{% endif %} style="width: 100%;">Sort by <b>Date</b></button></a>
+<a href="?{% if request.q %}q={{ request.q }}&{% endif %}{% if request.seed %}seed={{ seed }}&{% endif %}sort=downloads{% if request.order %}&order={{ request.order }}{% endif %}" style="flex-grow: 1;"><button {% if request.sort == "downloads" %}disabled{% endif %} style="width: 100%;">Sort by <b>Downloads</b></button></a>
+<a href="?{% if request.q %}q={{ request.q }}&{% endif %}{% if request.seed %}seed={{ seed }}&{% endif %}sort={{ request.sort }}&order={% if request.order == "ASC" %}DESC{% else %}ASC{% endif %}" style="flex-grow: 1;"><button style="width: 100%;">Sort in {% if request.order == "ASC" %}<b>descending</b>{% else %}<b>ascending</b>{% endif %} order</button></a>
+</div>
+</div>
+<div class="sunken-panel" style="height: 300px; width: 100%;">
+  <table class="interactive" style="width: 100%; display: table; table-layout: fixed;">
+    <colgroup>
+    <col style="width: 66.5%;">
+    <col style="width: 11%;">
+    <col style="width: 15%;">
+    <col style="width: 17.5%;">
+    </colgroup>
+    <thead>
+      <tr>
+        <th>Filename</th>
+        <th><abbr title="Downloads">DLs</abbr></th>
+        <th>Size</th>
+        <th>Time</th>
+      </tr>
+    </thead>
+    <tbody>
+{% if files|length == 0 %} 
+<tr><td style="padding: 0.4em 0.6em;">No public files found.</td></tr>
+{% endif %}
+{% for file in files %}
+  {% set file = global("controllers\\file", [con, file.id]) %}
+  {% set ban = global("controllers\\ban", [con, file.get_identity()]) %}
+  <tr id="file-{{ file.get_id() }}" hx-target="body" {% if ban.exists() and ban.is_permanent() %}style="opacity: 0.5;"{% endif %} hx-swap="afterend" hx-get="/f/{{ file.get_id() }}">
+  {% if file.get_icon()["type"] == "html" %}<script>
+    document.getElementById("file-{{ file.get_id() }}").addEventListener('htmx:confirm', function(evt) {
+    if(!confirm("Warning: This HTML file could get your browser information, proceed with caution.")) {
+      evt.preventDefault();
+    }
+    return;
+    });
+  </script>{% endif %}
+  <td style="display: flex; gap: 0.5em; flex-direction: row; align-items: center; padding: 1.25em 0.5em;" class="table-td-wrap">
+    <img height=34 style="image-rendering: pixelated;" src="{{ file.get_icon()["icon"] }}">
+    <div style="display: flex; flex-direction: column; gap: 0.1em;">
+    <span class="table-td-wrap" style="display: block; margin: 0; overflow: hidden;">{{ file.get_filename() }}</span>
+    <small title="{{ get_timezone() }}" class="table-td-wrap text-muted" style="display: block; margin: 0; overflow: hidden;">{{ file.get_createdat()|date("Y-m-d h:i:s") }}</small>
+    </div>
+  </td>
+  <td style="text-align: center;"><span class="table-td-wrap" style="line-height: 1em;">{{ file.get_downloads()|int_shorten(0) }}</span></td>
+  <td><span class="table-td-wrap" style="line-height: 1em;">{{ file.get_size()|int_shorten_size(1) }}</span></td>
+  <td><span class="table-td-wrap" style="line-height: 1em;">{{ file.get_createdat()|timeago }}</span></td>
+  </tr>
+{% endfor %}
+    </tbody>
+  </table>
+</div>
+{% if files|length != 0 %}
+{% set dotset = false %}
+<div style="display: flex; gap: 0.5em; flex-direction: row; justify-content: center; font-size: 1.2em;">
+  <a {% if page == 1 %}disabled{% else %}href="?{% if request.q %}q={{ request.q }}&{% endif %}{% if request.seed %}seed={{ seed }}&{% endif %}{% if request.sort %}sort={{ request.sort }}&{% endif %}{% if request.order %}order={{ request.order }}&{% endif %}p={{ (1 <= page - 1) and (page - 1 <= totalpages) ? page - 1 : 1 }}"{% endif %}><button {% if page == 1 %}disabled{% endif %}>Previous</button></a>
+  {% for pagee in (1 .. (totalpages)) %}
+    {% if pagee > 2 and pagee <= totalpages - 2 and pagee != page %}
+      {% if not dotset %} {% set dotset = true %}
+        <button disabled style="min-width: 25px;">...</button>
+      {% endif %} 
+    {% else %}
+      <a {% if page == pagee %}disabled{% else %}href="?{% if request.q %}q={{ request.q }}&{% endif %}{% if request.seed %}seed={{ seed }}&{% endif %}{% if request.sort %}sort={{ request.sort }}&{% endif %}{% if request.order %}order={{ request.order }}&{% endif %}p={{ pagee }}"{% endif %}><button style="min-width: 25px;" {% if page == pagee %}disabled{% endif %}>{{ pagee }}</button></a>
+    {% endif %}
+  {% endfor %}
+  <a {% if page == totalpages %}disabled{% else %}href="?{% if request.q %}q={{ request.q }}&{% endif %}{% if request.seed %}seed={{ seed }}&{% endif %}{% if request.sort %}sort={{ request.sort }}&{% endif %}{% if request.order %}order={{ request.order }}&{% endif %}p={{ (1 <= page + 1) and (page + 1 <= totalpages) ? page + 1 : totalpages }}"{% endif %}><button {% if page == totalpages %}disabled{% endif %}>Next</button></a>
+</div>
+{% endif %}
+<span style="text-align: center; margin-top: 0.25em;">We are not responsible for what users upload on our platform.</span>
+{% endblock %}

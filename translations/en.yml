@@ -1,0 +1,48 @@
+# heads up, please dont translate anything encased with {{ }}, as its a placeholder for elements.
+# navbar
+login: login
+register: register
+search: search
+# sidebar/bottombar 
+home: home
+subs: subs
+upload: upload
+popular: popular
+more: more
+settings: settings
+
+# footer
+credits: credits
+termsofservice: terms of service
+privacy: privacy
+about: about
+
+# errors
+thisvideoisnotapproved: this video is not approved
+tos_unchecked: you must agree to the tos
+
+input_empty: "{{input}} is empty"
+input_notascii: "{{input}} is not ASCII"
+input_mustbelength: "{{input}} must be more than {{num1}} and less than {{num2}} characters"
+input_comparenot: "{{input1}} is not the same as {{input2}}"
+
+# reusable?
+field: field
+maintenance: maintenance
+site_is_down_for_maintenance: site is down for maintenance
+
+username: username
+password: password
+confirm_password: confirm password
+i_agree_to_the_terms_of_service: i agree to the terms of service
+
+if_dont_have_acc: if you don't have an account
+register_instead: register instead
+
+if_have_acc: if you have an account
+login_instead: login instead
+
+
+# one time use or smthing
+whatis: "what is"
+about_testcorelabs: "it's a organization ran by one person, qzip, for building open-source projects, creating useful tools, services and so on."

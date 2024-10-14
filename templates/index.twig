@@ -1,0 +1,135 @@
+{% extends "html.twig" %}
+
+{% block content %}
+        <form hx-post="/upload" id="fileupload" hx-indicator=".hourglass" enctype="multipart/form-data" style="display: flex; position: relative;">
+        <div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 0.5em; width: 100%;" id="stage1">
+        {% set file = global("controllers\\file", [con, null, ('now'|date("Y-m-d"))|strtotime]) %}
+        <ul class="tree-view" style="display: flex; flex-direction: column; flex-grow: 1; flex-shrink: 1; flex-basis: 10em; text-align: center; gap: 0.5em; align-items: center; margin: 0 auto; justify-content: center; padding: 0.75em 0.5em;"
+        hx-target="body" {% if ban.exists() and ban.is_permanent() %}style="opacity: 0.5;"{% endif %} hx-swap="afterend" hx-get="/f/{{ file.get_id() }}">
+          {% if file.get_icon()["type"] == "html" %}<script>
+          document.getElementById("file-{{ file.get_id() }}").addEventListener('htmx:confirm', function(evt) {
+            if(!confirm("Warning: This HTML file could get your browser information, proceed with caution.")) {
+              evt.preventDefault();
+            }
+            return;
+          });
+          </script>{% endif %}
+          <h4 style="font-size: 1.33em; margin: 0;">Random file</h4>
+          <img height=34 width=34 style="image-rendering: pixelated; margin: 0 auto;" src="{{ file.get_icon()["icon"] }}">
+          <div class="table-td-wrap">{{ file.get_filename() }}</div>
+        </ul>
+        <ul class="tree-view" style="position: relative; flex-grow: 100; text-align: center;">
+        <h4 style="line-height: 1em; margin: 0.75em 0.5em;">Start upload</h4>
+        <p>Drag {#or paste #}a file into this box (100MB)</p>
+        <input style="position: absolute; width: 100%; height: 100%; left: 0; top: 0; opacity: 0;" required name="file" id="file" type="file">
+        <input type="hidden" name="redirect" value="true">
+        </ul>
+        </div>
+
+        <div id="stage2" style="position: relative; width: 100%; display: none;">
+        <script>
+        htmx.on('#fileupload', 'htmx:xhr:progress', function(evt) {
+          htmx.find('#fileuploadprogressbar').style.width = (evt.detail.loaded/evt.detail.total * 100) + "%"
+        });
+        </script>
+        <ul class="htmx-indicator hourglass tree-view" style="flex-grow: 1; width: 100%; background: #c0c0c0; box-sizing: border-box; padding: 0.35em 0.4em 0.4em 0.4em;">
+          <div id="fileuploadprogressbar" style="background: #0103a8; width: 0%; height: 14px;"></div>
+        </ul>
+        <img height=48 class="htmx-indicator hourglass" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); image-rendering: pixelated;" src="/assets/img/loading.gif">
+        <ul class="tree-view" style="flex-grow: 1; text-align: center; display: block;">
+        <div id="file-list">
+          <div style="display: flex; gap: 0.5em; flex-direction: row; align-items: center;">
+            <img id="fileicon" height=32 style="image-rendering: pixelated;" src="/assets/img/file_lines-0.png">
+            <span id="filename" style="font-size: 1.2em; line-height: 1.25em;">NaN</span>
+            <span id="filesize" style="margin-left: auto; font-size: 0.95em; line-height: 1em;">1B</span>
+          </div>
+        </div>
+        </ul>
+        <textarea name="description" style="width: 100%; margin-top: 0.25em; resize: vertical;" placeholder="Description" rows="2"></textarea>
+        <input name="key" type="text" style="width: 100%; margin-top: 0.25em;" placeholder="Key (Leave blank if you want a randomly generated one)">
+        <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 1em; margin: 0.5em 0;">
+        <div>
+          <input id="public" type="radio" value="0" checked name="privacy">
+          <label for="public">Public</label>
+        </div>
+        <div>
+          <input id="unlisted" type="radio" value="1" name="privacy">
+          <label for="unlisted">Unlisted</label>
+        </div>
+        </div>
+        <div style="display: flex; flex-direction: row; justify-content: center; margin-top: 0.5em; gap: 0.5em;">
+        <button type="button" onclick="removevideo();">Remove</button>
+        <button>Upload</button>
+        </div>
+        </div>
+        </form>
+        <span style="text-align: center;">By using this service, you agree to the <a href="/tos">Terms of Service</a> and <a href="/privacypolicy">Privacy Policy</a>.</span>
+<script>
+// https://stackoverflow.com/questions/10420352/converting-file-size-in-bytes-to-human-readable-string
+function humanFileSize(bytes, si=false, dp=1) {
+  const thresh = si ? 1000 : 1024;
+
+  if (Math.abs(bytes) < thresh) {
+    return bytes + ' B';
+  }
+
+  const units = si 
+    ? ['KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'] 
+    : ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
+  let u = -1;
+  const r = 10**dp;
+
+  do {
+    bytes /= thresh;
+    ++u;
+  } while (Math.round(Math.abs(bytes) * r) / r >= thresh && u < units.length - 1);
+
+
+  return bytes.toFixed(dp) + units[u];
+}
+
+
+function filechange(file) {
+  if (file) {
+    const extension = file.name.split('.').pop().toLowerCase();
+    var fileicon = document.getElementById("fileicon");
+    var filename = document.getElementById("filename");
+    var filesize = document.getElementById("filesize");
+    fileicon.src = "/assets/img/loading.gif";
+    (async () => {
+    try {
+    var response = await fetch(`/api/mimetype2icon?mimetype=${file.type}&ext=${extension}`);
+    var text = await response.text();
+    fileicon.src = text;
+    } catch (error) {
+    console.error('err: ', error);
+    }
+    })();
+
+    
+    filename.textContent = file.name;
+    filesize.textContent = humanFileSize(file.size, true);
+    document.getElementById('file').style.display = "none";
+    document.getElementById('stage1').style.display = "none";
+    document.getElementById('stage2').style.display = "unset";
+  }
+}
+
+
+//window.addEventListener('paste', e => {
+//});
+
+ document.getElementById('file').addEventListener('change', function(e) {
+  filechange(e.target.files[0]); 
+ });
+
+function removevideo() {
+    var fileicon = document.getElementById("fileicon");
+    document.getElementById('file').style.display = "unset";
+    document.getElementById('stage1').style.display = "flex";
+    document.getElementById('stage2').style.display = "none";
+    document.getElementById('file').value = null;
+    fileicon.src = "";
+}
+</script>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% set hxrequest = getallheaders()["Hx-Request"] %}{% if not hxrequest %}<!doctype html>
+<html style="display: flex; min-height: 100%; background: #007c7f; cursor: url(/assets/98.cur), auto;" lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/css/98.css">
+    <link rel="stylesheet" href="/assets/css/core.css">
+    <meta property="og:site_name" content="{{ conf.get()['project']['name'] }}">
+    <meta property="og:image" content="//{{ domain }}{{ ogicon ?? "/assets/img/network_internet_pcs_installer-2.png" }}"/>
+	  <meta content="{{ title ?? pagename }}" property="og:title">
+	  <meta content="{{ description ?? conf.get()["project"]["about"] }}" property="og:description">
+	  <meta name="theme-color" content="{{ conf.get()["project"]["accent"] }}">
+    <link rel="icon" type="image/png" href="{{ pageicon ?? "/assets/img/network_internet_pcs_installer-1.png" }}">
+    <script src="/assets/js/htmx.min.js"></script>
+    <title>{{ title ?? pagename }} | {{ conf.get()['project']['name'] }}</title>
+  </head>
+  <body style="display: flex; align-items: center; justify-content: center; min-height: 100%; width: 100%; position: relative; overflow: auto;">
+    {% endif %}{% set randomizerrr = microtime(true)|replace({".": ""}) %}<div class="window" mainwindow-{{randomizerrr}} style="position: absolute; max-height: 100%; flex-basis: 50em; flex-grow: 0; flex-shrink: 1; z-index: 5; overflow: auto; max-width: {% if not hxrequest %}560px{% else %}520px{% endif %}; width: 100%;">
+      <div class="title-bar" onmousedown='dragger.startmoving(this, "[mainwindow-{{randomizerrr}}]", event);' onmouseup='dragger.stopmoving(this, "[mainwindow-{{randomizerrr}}]");'>
+        <div class="title-bar-text" style="display: flex; flex-direction: row; gap: 0.5em; align-items: center;"><img src="/assets/img/network_internet_pcs_installer-1.png" style="vertical-align: center; image-rendering: pixelated;" height=14> <span style="margin-top: auto;">{{ title ?? pagename }} | {{ conf.get()['project']['name'] }}</span></div>
+        <div class="title-bar-controls">
+          <a href="/help"><button aria-label="Help"></button></a>
+          {% if hxrequest %}<a href="{{ url_query }}"><button aria-label="Restore"></button></a>{% endif %}
+          <a {% if hxrequest %}onclick='document.querySelector("[mainwindow-{{randomizerrr}}]").remove();'{% else %}href="/"{% endif %}><button aria-label="Close"></button></a>
+        </div>
+      </div>
+       <div style="max-height: 550px; height: 100%; overflow-y: scroll; overflow-x: hidden; box-sizing: border-box;">{% if showbranding ?? true %}<div><div style="position: relative; display: flex; flex-direction: column; justify-content: center; gap: 0.5em; padding: 0.5em 0.5em 3.5em 0.5em; background: url(/assets/img/98clouds.png); background-size: 100% 200%; overflow: hidden;">
+       <a href="/" style="color: inherit; text-decoration: none; outline: none !important;"><div style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 0.75em;">
+          <img src="/assets/img/network_internet_pcs_installer-2.png" style="image-rendering: pixelated;" height=48>
+          <div style="position: relative;"><h3 style="line-height: 0.95em; margin: 0; font-weight: 900;" class="segoebold">{{ conf.get()['project']['name'] }}</h3><span>{{ conf.get()["project"]["version"]|upper }}</span></div>
+        </div></a>
+        <div style="position: absolute; bottom: 0.25em; left: 0.25em; display: flex; flex-direction: row; gap: 0.5em; width: 100%;">
+        <a href="/dsc"><img class="image-rendering-pixelated" src="/assets/img/jointhediscord.gif" height=31 width=88></a>
+        <b style="margin: auto auto;">{{ ((motd|shuffle)[0])|raw }}</b>
+        <a href="/kofi" style="margin-right: 0.5em;"><img src="/assets/img/supportonkofi.gif" height=31 width=88 style="image-rendering: pixelated;"></a>
+        </div>
+        </div></div>{% endif %}
+      <div class="window-body" style="display: flex; flex-direction: column; justify-content: center; gap: 0.25em;">
+        {% block content %}{% endblock %}
+      </div></div>
+      {% if banned.exists() and not banned.is_permanent() and banned.get_length() >= 'now'|date("U") %}<div style="color: #e91717; text-align: center; margin: 0.1em 0 0.3em 0;">You are currently banned for the reason "{{ banned.get_reason() }}" and will get unbanned in {{ banned.get_length()|timeago }}.</div>{% endif %}
+      {% if statusbar ?? true %}<div class="status-bar">
+        <p class="status-bar-field" style="flex-basis: 10em; flex-grow: 0;">{{ filesuploaded }} public file{% if filesuploaded >= 1 %}s{% endif %}</p>
+        <p class="status-bar-field" style="flex-basis: 10em; flex-grow: 0;">{{ filesuploadedprivate }} private file{% if filesuploadedprivate >= 1 %}s{% endif %}</p>
+        <p class="status-bar-field" style="flex-basis: 10em; flex-grow: 1; display: flex; flex-direction: row; gap: 0.5em; align-items: center;">{{ diskused }}</p>
+        <p class="status-bar-field" style="flex-basis: 20em; flex-grow: 1; display: flex; flex-direction: row; gap: 0.5em; align-items: center;"><span class="spoiler-blur">{{ ipua2identifier() }}</span></p>
+        <a href="/files" style="color: inherit; text-decoration: none;"><button style="padding: 0.25em; font-size: 0.95em; min-height: 16px; min-width: 35px;">Files</button></a>
+        <a href="/docs/api" style="color: inherit; text-decoration: none;"><button style="padding: 0.25em; font-size: 0.95em; min-height: 16px; min-width: 35px;">API</button></a>
+      </div>{% endif %}
+    </div>
+    {% if not hxrequest %}<span style="position: fixed; bottom: 0.15em; right: 0.15em; z-index: 1; font-family: 'Pixelated MS Sans Serif'; color: #ffffff; font-size: 1.05em; text-shadow: black 2px 2px;">testcore labs @{{ 'now'|date("Y") }}</span>
+    <script src="/assets/js/core.js"></script>
+  </body>
+</html>{% endif %}

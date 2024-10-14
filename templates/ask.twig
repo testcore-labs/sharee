@@ -1,0 +1,21 @@
+{% extends "html.twig" %}
+{% set showbranding = true %}
+{% set title = "Ask Sheeves" %}
+{% block content %}
+<form style="display: flex; flex-direction: column; gap: 0.5em;" hx-get="/api/ask?html" hx-indicator=".hourglass" hx-target="#sheeves-results">
+  <div style="display: flex; flex-direction: column; gap: 0.5em;" id="sheeves-results">
+    <div style="display: flex; flex-direction: row; gap: 0.25em;">
+      <div style="position: relative; align-self: baseline;">
+        <img src="/assets/img/sheeves1.png" style="image-rendering: pixelated;" width="48">
+        <img height=48 class="htmx-indicator hourglass" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); image-rendering: pixelated;" src="/assets/img/loading.gif">
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 0.25em; padding: 0.25em; width: 100%; box-sizing: border-box;"><b style="margin: 0; font-size: 1.33em;">Sheeves [BETA]</b><div style="max-width: 100%; width: 100%; white-space: normal; word-break: break-all !important; word-wrap: break-word !important; overflow-wrap:break-word; overflow: auto;">Ask me anything!</div></div>
+    </div>
+  </div>
+  <div style="display: flex; flex-direction: row; gap: 0.25em; align-items: center;">
+    <input  autocomplete="off" type="text" name="content" style="flex: 1;" placeholder="Ask Sheeves!">
+    <button type="submit">Submit</button>
+  </div>
+</form>
+<span style="text-align: center; margin-top: 0.25em;">We are not responsible for what the AI generates.</span>
+{% endblock %}
